@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+ provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+ 
+}
+
+
+model Usuario {
+  id       String   @id @default(uuid())
+  idUserClerk String @unique
+  email    String   @unique
+  nome     String
+  sobrenome String
+  senha String
+  telefone String
+  avatar Avatar[]
+  online Boolean @default(false)
+  conta  Boolean @default(false)
+  Mensagens Message[]
+  Propreedades Propreedade[]
+  PropreedadeFavoritas FavoriteProperty[]
+  Reservas Reservas[]
+  criadoEm   DateTime @default(now())
+  atualidoEm   DateTime @updatedAt
+}
+
+
+
+// model UsersProfissional{
+//   id          Int    @id @default(autoincrement())
+//   userId     String
+//   user    User   @relation(fields: [userId], references: [id])
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
+
+
+model Propreedade{
+  id          String    @id @default(uuid())
+  titulo        String
+  endereco     String
+  descricao String @db.Text
+  preco       Int
+  tipo        String
+  propreetarioId     String
+  propreetario       Usuario    @relation(fields: [propreetarioId], references: [id])
+  Reservas     Reservas[]
+  Imagem      ImagemPropriedade[]
+  Favoritos  FavoriteProperty[]
+  criadoEm   DateTime @default(now())
+  atualizadoEm   DateTime @updatedAt
+
+}
+
+
+
+model Avatar{
+  id           Int    @id @default(autoincrement())
+  imageUrl     String
+  userId     String
+  user    Usuario   @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+model ImagemPropriedade{
+  id           Int    @id @default(autoincrement())
+  imageUrl     String[]
+  propreedadeId  String
+  propreedade    Propreedade   @relation(fields: [propreedadeId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+
+
+model Reservas {
+  id           String    @id @default(uuid())
+  startDate   DateTime
+  endDate     DateTime
+  propreedadeId  String
+  userId String
+  user Usuario @relation(fields: [userId],references: [id])
+  property    Propreedade   @relation(fields: [propreedadeId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Message{
+  id           Int    @id @default(autoincrement())
+  senderId    String
+  receiverId String
+  sender    Usuario @relation(fields: [senderId], references: [id])
+  text        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+}
+
+
+model FavoriteProperty{
+  id           Int    @id @default(autoincrement())
+  userId     String
+  Usuario     Usuario    @relation(fields: [userId], references: [id])
+  propreedadeId  String
+  Propreedade    Propreedade   @relation(fields: [propreedadeId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
