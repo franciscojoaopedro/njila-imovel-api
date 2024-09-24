@@ -1,12 +1,11 @@
 
 import express from "express"
-import fastify from "fastify"
+
 import cors from "cors"
 import routes from "./src/core/routes"
 
 
 const app=express()
-const appFastify=fastify({logger:true})
 
 
 app.use(express.json())

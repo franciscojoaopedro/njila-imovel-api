@@ -89,7 +89,7 @@ export default class ControllersUsuarios {
                 .json({
                     success: false,
                     message: "Erro ao criar o usuario!",
-                    error: error?.message
+                
                 })
         }
     }
@@ -101,7 +101,8 @@ export default class ControllersUsuarios {
 
 
         try {
-            const data = await this.controller.buscar_usuario_por_id.execute({
+            const { buscar_usuario_por_id } = useUsuario(prisma)
+            const data = await  buscar_usuario_por_id.execute({
                 idUsuario
             })
             res.status(200)

@@ -1,0 +1,4 @@
+name = "backenk-njila"
+entry = "server.ts"
+outdir = "./dist"
+target = "bun"
