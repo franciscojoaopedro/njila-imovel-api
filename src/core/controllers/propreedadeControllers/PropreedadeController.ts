@@ -33,15 +33,37 @@ export default class ControllerPropreedade {
                 files: req.files as Express.Multer.File[],
                 pasta: "imagens_propriedades"
             })
+            const detalhes = {
+                areaTotalLote: 200,
+                quintal: 50,
+                quartos: 3,
+                anoConstrucao: 2020,
+                piso: 'Cerâmico',
+                wc: 2,
+                elevador: 'Sim',
+                estacionamento: 'Sim',
+                carregamentoCarrosEletricos: 'Sim',
+                detalhesEnergeticos: 'A casa possui sistema de energia solar.',
+              };
+
+            const Detalhes= await prisma.detalhesDaPropriedade.create({
+                data: {
+                   ...detalhes
+                },
+              });
+
+              
             const propriedade = await criarPropriedades.execute({
                 descricao,
                 endereco,
                 idPropreetario: idProprietario,
                 preco: Number(preco),
                 tipo,
-                titulo
+                titulo,
+                idDetalhes:Detalhes.id
             })
-
+            
+        
             const imagem = await ImagemPropriedade.execute({
                 propreedadeId: propriedade.id,
                 imageUrl: uploadedImages
@@ -60,9 +82,7 @@ export default class ControllerPropreedade {
             return res.status(500)
                 .json({
                     success: false,
-                    message: "erro interno ao criar o imovel"
-
-
+                    message: "erro interno ao criar o imovel",
                 })
         }
 

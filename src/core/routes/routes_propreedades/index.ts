@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { multer_propriedades } from "../../../packages/multer/multer";
 import ControllerPropreedade from "../../controllers/propreedadeControllers/PropreedadeController";
+import { verifyImage } from "../../../middlewares/usuario_middlewares/google-vision";
 
 
 

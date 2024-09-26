@@ -21,6 +21,7 @@ export default class PropreedadeRepositoryPrisma implements PropreedadeGateway{
         const propriedades= await this.prisma.propreedade.findMany({
             include:{
                 Imagem:true,
+                detalhes:true,
                 propreetario:{
                     select:{
                         nome:true,
@@ -32,6 +33,8 @@ export default class PropreedadeRepositoryPrisma implements PropreedadeGateway{
                 }
             }
         })
+
+        
         return propriedades
     }
    async criar(propreedade: Propreedade): Promise<OPropreedade> {
@@ -42,6 +45,19 @@ export default class PropreedadeRepositoryPrisma implements PropreedadeGateway{
 
         console.log("salvando propreedade com prisma")
         console.log(data)
+
+        const detalhes = {
+            areaTotalLote: 200,
+            quintal: 50,
+            quartos: 3,
+            anoConstrucao: 2020,
+            piso: 'Cerâmico',
+            wc: 2,
+            elevador: 'Sim',
+            estacionamento: 'Sim',
+            carregamentoCarrosEletricos: 'Sim',
+            detalhesEnergeticos: 'A casa possui sistema de energia solar.',
+          };
     
         const nova_propreedade=await this.prisma.propreedade.create({
             data:{
@@ -50,9 +66,12 @@ export default class PropreedadeRepositoryPrisma implements PropreedadeGateway{
                 preco:data.preco,
                 tipo:data.tipo,
                 titulo:data.titulo,
-                propreetario:{connect:{id:data.idPropreetario}}
-
-               
+                propreetario:{connect:{id:data.idPropreetario}},
+                detalhes:{
+                    create:{
+                        ...detalhes
+                    }
+                }
             }
         })
 

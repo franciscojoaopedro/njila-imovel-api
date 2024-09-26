@@ -51,11 +51,29 @@ model Propreedade{
   propreetarioId     String
   propreetario       Usuario    @relation(fields: [propreetarioId], references: [id])
   Reservas     Reservas[]
+  detalhesId       String @unique
+  detalhes         DetalhesDaPropriedade @relation(fields: [detalhesId], references: [id],onDelete: Cascade)
   Imagem      ImagemPropriedade[]
   Favoritos  FavoriteProperty[]
   criadoEm   DateTime @default(now())
   atualizadoEm   DateTime @updatedAt
 
+}
+model DetalhesDaPropriedade {
+  id                           String         @id @default(uuid())
+  areaTotalLote               Int?
+  quintal                     Int?
+  quartos                     Int?
+  anoConstrucao               Int?
+  piso                        String?
+  wc                          Int?
+  elevador                    String?
+  estacionamento              String?
+  carregamentoCarrosEletricos String?
+  detalhesEnergeticos         String?
+  propriedade                 Propreedade?
+  criadoEm                    DateTime       @default(now())
+  atualizadoEm                DateTime       @updatedAt
 }
 
 

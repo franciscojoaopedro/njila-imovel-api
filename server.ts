@@ -12,7 +12,7 @@ app.use(express.json())
 
 
 app.use(cors({
-    origin:["http://localhost:3000","https://njilaimovel.vercel.app"]
+    origin:["http://localhost:3000","https://njilaimovel.vercel.app","https://36ee-2c0f-f888-a980-2848-704f-b40b-a495-8fe3.ngrok-free.app"]
 }))
 
 
