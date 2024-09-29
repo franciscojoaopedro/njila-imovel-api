@@ -41,13 +41,43 @@ model Usuario {
 
 
 
+enum TipoPropriedade {
+  APARTAMENTO   
+  ESTUDIO         
+  VIVENDA         
+  PREDIO         
+  TERRENO              
+  QUINTA
+  FAZENDA           
+  LOJA 
+  ESCRITORIO         
+}
+enum TipoNegocio {
+  VENDA        
+  ARRENDAMENTO 
+}
+
+enum EstadoPropriedade {
+  COMPRADO
+  ARRENDADO
+}
+
+enum DisponibilidadePropriedade {
+  DISPONIVEL
+  EM_NEGOCIACAO
+  INDISPONIVEL
+  COMPRADO
+  ARRENDADO
+}
 model Propreedade{
   id          String    @id @default(uuid())
   titulo        String
   endereco     String
   descricao String @db.Text
   preco       Int
-  tipo        String
+  tipo              TipoPropriedade           
+  disponibilidade   DisponibilidadePropriedade @default(DISPONIVEL)
+  tipoNegocio       TipoNegocio           
   propreetarioId     String
   propreetario       Usuario    @relation(fields: [propreetarioId], references: [id])
   Reservas     Reservas[]
@@ -57,45 +87,47 @@ model Propreedade{
   Favoritos  FavoriteProperty[]
   criadoEm   DateTime @default(now())
   atualizadoEm   DateTime @updatedAt
-
+  vendidoEm DateTime?
+  arrendadoEm DateTime?
 }
 model DetalhesDaPropriedade {
   id                           String         @id @default(uuid())
   areaTotalLote               Int?
-  quintal                     Int?
+  quintal                     Boolean?
   quartos                     Int?
   anoConstrucao               Int?
   piso                        String?
   wc                          Int?
-  elevador                    String?
-  estacionamento              String?
-  carregamentoCarrosEletricos String?
+  elevador                    Boolean?
+  estacionamento              Boolean?
+  carregamentoCarrosEletricos Boolean?
   detalhesEnergeticos         String?
   propriedade                 Propreedade?
   criadoEm                    DateTime       @default(now())
   atualizadoEm                DateTime       @updatedAt
+
 }
 
+model ImagemPropriedade{
+  id           Int    @id @default(autoincrement())
+  imageUrl     String[]
+  propreedadeId  String
+  propreedade    Propreedade   @relation(fields: [propreedadeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
 
 model Avatar{
   id           Int    @id @default(autoincrement())
   imageUrl     String
   userId     String
-  user    Usuario   @relation(fields: [userId], references: [id])
+  user    Usuario   @relation(fields: [userId], references: [id],onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 
-model ImagemPropriedade{
-  id           Int    @id @default(autoincrement())
-  imageUrl     String[]
-  propreedadeId  String
-  propreedade    Propreedade   @relation(fields: [propreedadeId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
 
 
 
@@ -107,7 +139,7 @@ model Reservas {
   propreedadeId  String
   userId String
   user Usuario @relation(fields: [userId],references: [id])
-  property    Propreedade   @relation(fields: [propreedadeId], references: [id])
+  property    Propreedade   @relation(fields: [propreedadeId], references: [id],onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -129,7 +161,7 @@ model FavoriteProperty{
   userId     String
   Usuario     Usuario    @relation(fields: [userId], references: [id])
   propreedadeId  String
-  Propreedade    Propreedade   @relation(fields: [propreedadeId], references: [id])
+  Propreedade    Propreedade   @relation(fields: [propreedadeId], references: [id],onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

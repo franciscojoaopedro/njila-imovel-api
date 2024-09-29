@@ -7,78 +7,86 @@ import type { IPropreedade, OAllPropriedade, OPropreedade } from "../../domain/e
 
 
 
-export default class PropreedadeRepositoryPrisma implements PropreedadeGateway{
-    private constructor(private readonly prisma: PrismaClient){
+export default class PropreedadeRepositoryPrisma implements PropreedadeGateway {
+    private constructor(private readonly prisma: PrismaClient) {
         this.prisma = prisma
     }
-    public static criar(prisma:PrismaClient){
+    public static criar(prisma: PrismaClient) {
         return new PropreedadeRepositoryPrisma(prisma)
     }
-    public static with(prisma:PrismaClient){
-        return  PropreedadeRepositoryPrisma.criar(prisma)
+    public static with(prisma: PrismaClient) {
+        return PropreedadeRepositoryPrisma.criar(prisma)
     }
-    public async buscarTodos(): Promise<OAllPropriedade  []> {
-        const propriedades= await this.prisma.propreedade.findMany({
-            include:{
-                Imagem:true,
-                detalhes:true,
-                propreetario:{
-                    select:{
-                        nome:true,
-                        sobrenome:true,
-                        avatar:true,
-                        email:true,
-                        telefone:true,
+    public async buscarTodos(): Promise<OAllPropriedade[]> {
+        const propriedades = await this.prisma.propreedade.findMany({
+            include: {
+                Imagem: true,
+                detalhes: true,
+                propreetario: {
+                    select: {
+                        nome: true,
+                        sobrenome: true,
+                        avatar: true,
+                        email: true,
+                        telefone: true,
                     }
                 }
             }
         })
 
-        
+
         return propriedades
     }
-   async criar(propreedade: Propreedade): Promise<OPropreedade> {
-        const data={
-           ...propreedade.buscarPropreedade
-           
+    async criar(propreedade: Propreedade): Promise<OPropreedade> {
+        const data = {
+            ...propreedade.buscarPropreedade,
+
+
         }
 
         console.log("salvando propreedade com prisma")
         console.log(data)
-
-        const detalhes = {
-            areaTotalLote: 200,
-            quintal: 50,
-            quartos: 3,
-            anoConstrucao: 2020,
-            piso: 'Cerâmico',
-            wc: 2,
-            elevador: 'Sim',
-            estacionamento: 'Sim',
-            carregamentoCarrosEletricos: 'Sim',
-            detalhesEnergeticos: 'A casa possui sistema de energia solar.',
-          };
-    
-        const nova_propreedade=await this.prisma.propreedade.create({
-            data:{
-                descricao:data.descricao,
-                endereco:data.endereco,
-                preco:data.preco,
-                tipo:data.tipo,
-                titulo:data.titulo,
-                propreetario:{connect:{id:data.idPropreetario}},
-                detalhes:{
-                    create:{
-                        ...detalhes
+        const nova_propreedade = await this.prisma.propreedade.create({
+            data: {
+                descricao: data.descricao,
+                endereco: data.endereco,
+                preco: data.preco,
+                tipo: data.tipo,
+                titulo: data.titulo,
+                propreetario: { connect: { id: data.idPropreetario } },
+                detalhes: {
+                    create: {
+                        ...data.detalhes
                     }
-                }
+                },
+                tipoNegocio:data.tipoNegocio,
+                disponibilidade:"DISPONIVEL"
             }
         })
 
         return nova_propreedade
     }
-   async buscar(propreedade: IPropreedade): Promise<any> {
-        
+    async getProprityById(data: { idPropriedade: string; }): Promise<OAllPropriedade | null> {
+        const propriedade = await this.prisma.propreedade.findUnique({
+            where: {
+                id: data.idPropriedade
+            },
+            include: {
+                Imagem: true,
+                detalhes: true,
+                propreetario: {
+                    select: {
+                        nome: true,
+                        sobrenome: true,
+                        avatar: true,
+                        email: true,
+                        telefone: true,
+                    }
+                }
+            }
+        })
+
+        return propriedade
     }
 }
 

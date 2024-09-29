@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { multer_propriedades } from "../../../packages/multer/multer";
-import ControllerPropreedade from "../../controllers/propreedadeControllers/PropreedadeController";
 import { verifyImage } from "../../../middlewares/usuario_middlewares/google-vision";
+import BuscarPropriedadesPeloIdController from "../../controllers/propreedadeControllers/BuscarPropriedadePeloIdController";
+import BuscarTodasPropriedadesController from "../../controllers/propreedadeControllers/BuscarTodasPropriedadesController";
+import CriarPropriedadeController from "../../controllers/propreedadeControllers/CriarPropriedadesController";
 
 
 
@@ -9,9 +11,12 @@ import { verifyImage } from "../../../middlewares/usuario_middlewares/google-vis
 
 
 const rota_propreedade=Router()
-const controller=  new ControllerPropreedade()
-rota_propreedade.post("/criarPropreedades",multer_propriedades.array("images",5),controller.criarPropreedade)
-rota_propreedade.get("/buscarTodasPropriedades",controller.buscarTodasPropriedades)
+const controllerBuscarPropriedadePeloId=  new BuscarPropriedadesPeloIdController()
+const controllerCriarPropriedade=  new CriarPropriedadeController()
+const controllerBuscarTodasPropriedade=  new BuscarTodasPropriedadesController()
+rota_propreedade.post("/criarPropriedades",multer_propriedades.array("images",5),controllerCriarPropriedade.execute)
+rota_propreedade.get("/buscarTodasPropriedades",controllerBuscarTodasPropriedade.execute)
+rota_propreedade.get("/buscarPropriedade/:idPropriedade",controllerBuscarPropriedadePeloId.execute)
 
 
 export default rota_propreedade
