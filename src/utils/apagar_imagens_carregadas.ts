@@ -14,3 +14,14 @@ export   function apagarImagensCarregas(files:Express.Multer.File[]){
         });
       });
 }
+
+
+export   function apagarImagensCarregaOne(file:Express.Multer.File){
+  fs.unlink(file.path, (err) => {
+    if (err) {
+      console.error(`Falha ao deletar arquivo local: ${err}`);
+    } else {
+      console.log(`Arquivo local deletado com sucesso: ${file.path}`);
+    }
+  });
+}

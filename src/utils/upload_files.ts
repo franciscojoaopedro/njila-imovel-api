@@ -1,5 +1,5 @@
 import cloudinary from "../packages/clouds/cloudinary";
-import { apagarImagensCarregas } from "./apagar_imagens_carregadas";
+import { apagarImagensCarregaOne, apagarImagensCarregas } from "./apagar_imagens_carregadas";
 
 
 
@@ -11,6 +11,13 @@ interface propsUploadImagem{
     pasta:string,
     files:Express.Multer.File[]
 }
+
+
+interface propsUploadOneImagem{
+    pasta:string,
+    file:Express.Multer.File
+}
+
 
 
 export async function useUploadImages({files,pasta}:propsUploadImagem){
@@ -28,5 +35,23 @@ export async function useUploadImages({files,pasta}:propsUploadImagem){
 
     return{
         uploadedImages
+    }
+}
+
+
+
+export async function useUploadeOneFile({file,pasta}:propsUploadOneImagem){
+    let imageUrl: string = ""
+
+    
+    const uploadResponse = await cloudinary.uploader.upload(file.path,{
+        folder:pasta,
+
+    });
+    imageUrl=uploadResponse.url
+    apagarImagensCarregaOne(file)
+
+    return{
+        imageUrl
     }
 }
