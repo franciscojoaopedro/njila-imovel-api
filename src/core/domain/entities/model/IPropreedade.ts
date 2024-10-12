@@ -55,6 +55,19 @@ export interface OPropreedade {
     propreetarioId: string;
 }
 
+
+
+export interface IFiltroPropriedades{
+    page?: number  
+    limit?: number  
+    endereco?: string, 
+    TipoPropriedade?: string, 
+    tipoNegocio?: string
+}
+
+
+
+
 export interface OAllPropriedade {
     id: string;
     titulo: string;
@@ -103,4 +116,12 @@ export interface OAllPropriedade {
         createdAt: Date;
         updatedAt: Date;
     }[];
+}
+
+
+export interface IPropriedadeFiltradas{
+    propriedades:OAllPropriedade[],
+    total: number,
+    page?:number,
+    limit?:number,
 }

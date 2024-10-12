@@ -1,3 +1,4 @@
+import type { IFiltroPropriedades, IPropriedadeFiltradas, OAllPropriedade } from "../../core/domain/entities/model/IPropreedade";
 import type PropreedadeGateway from "../../core/gateway/PropreedadeGateway/PropreedadeGateway";
 import type UseCases from "../usecase";
 
@@ -5,9 +6,7 @@ import type UseCases from "../usecase";
 
 
 
-export default class BuscarTodasPropriedadesUseCase {
-
-
+export default class BuscarTodasPropriedadesUseCase implements UseCases <IFiltroPropriedades,IPropriedadeFiltradas> {
     private constructor(private readonly propriedadeGateway:PropreedadeGateway){}
     public static criar(propriedadeGateway:PropreedadeGateway){
         return new BuscarTodasPropriedadesUseCase(propriedadeGateway)
@@ -17,8 +16,8 @@ export default class BuscarTodasPropriedadesUseCase {
     }
 
 
-    async execute(){
-        const propriedades  =  await this.propriedadeGateway.buscarTodos()
+    async execute(data:IFiltroPropriedades){
+        const propriedades  =  await this.propriedadeGateway.buscarTodos(data)
        return propriedades
     }
 

@@ -1,7 +1,7 @@
 import type { PrismaClient } from "@prisma/client";
 import type PropreedadeGateway from "../../gateway/PropreedadeGateway/PropreedadeGateway";
 import type Propreedade from "../../domain/entities/Propreedades/PropreedadeEntities";
-import type { IPropreedade, OAllPropriedade, OPropreedade } from "../../domain/entities/model/IPropreedade";
+import type { IFiltroPropriedades, IPropreedade, IPropriedadeFiltradas, OAllPropriedade, OPropreedade } from "../../domain/entities/model/IPropreedade";
 
 
 
@@ -17,8 +17,32 @@ export default class PropreedadeRepositoryPrisma implements PropreedadeGateway {
     public static with(prisma: PrismaClient) {
         return PropreedadeRepositoryPrisma.criar(prisma)
     }
-    public async buscarTodos(): Promise<OAllPropriedade[]> {
+  async  buscarTodos(data: IFiltroPropriedades): Promise< IPropriedadeFiltradas> {
+
+     let filtro:IFiltroPropriedades={
+        page:data.page ||1,
+        limit: data.limit|| 10,
+        endereco:data.endereco,
+        TipoPropriedade:data.TipoPropriedade,
+        tipoNegocio:data.tipoNegocio,
+
+     }   
+     const skip=(Number(filtro.page)-1)* Number(filtro.page)
+     const whereClause: any = {};
+     if (filtro.endereco) {
+        whereClause.endereco = { contains: filtro.endereco };
+    }
+
+    if (filtro.TipoPropriedade) {
+        whereClause.tipo = filtro.TipoPropriedade;
+    }
+
+    if (filtro.tipoNegocio) {
+        whereClause.tipoNegocio = filtro.tipoNegocio;
+    }
+
         const propriedades = await this.prisma.propreedade.findMany({
+            where:whereClause,
             include: {
                 Imagem: true,
                 detalhes: true,
@@ -31,11 +55,25 @@ export default class PropreedadeRepositoryPrisma implements PropreedadeGateway {
                         telefone: true,
                     }
                 }
-            }
+            },
+            skip: skip,
+            take: filtro.limit?filtro.limit:undefined,
         })
 
+        const totalPropriedades = await this.prisma.propreedade.count({
+            where: whereClause,
+        });
 
-        return propriedades
+
+        return {
+            propriedades,
+            total: totalPropriedades,
+            page:filtro.page,
+            limit:filtro.limit,
+        }
+
+
+
     }
     async criar(propreedade: Propreedade): Promise<OPropreedade> {
         const data = {
